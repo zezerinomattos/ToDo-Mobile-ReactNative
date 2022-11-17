@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
 //MY IMPORTS
 import styles from './styles';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import TaskCard from '../../components/TaskCard';
 
 export default function Home(){
 
@@ -37,9 +38,25 @@ export default function Home(){
                     </TouchableOpacity>
                 </View>
 
+                <View style={styles.title}>
+                    <Text style={styles.titleText}>TAREFAS</Text>
+                </View>
+
+                <ScrollView contentContainerStyle={{alignItems: 'center'}} style={styles.content}>
+                    <TaskCard />
+                    <TaskCard done={true}/>
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                    <TaskCard />
+                </ScrollView>
+
                 <Footer icon={'add'} />
             </View>
-            
             
         </>
     );
