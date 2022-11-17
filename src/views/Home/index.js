@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
 //MY IMPORTS
 import styles from './styles';
@@ -7,9 +7,27 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import TaskCard from '../../components/TaskCard';
 
+// CONECTAR COM API
+import api from '../../services/api';
+
 export default function Home(){
 
     const [filter, setFilter] = useState('today');
+    const [tasks, setTasks] = useState([]);
+    const [load, setLoad] = useState(false);
+
+    async function loadTasks(){
+        setLoad(true)
+        await api.get('/task/filter/all/11:11:11:11:11:11')
+            .then(response => {
+                setTasks(response.data);
+                setLoad(false);
+            });
+    }
+
+    useEffect(() => {
+        loadTasks();
+    }, []);
 
     return(
         <>
@@ -43,16 +61,12 @@ export default function Home(){
                 </View>
 
                 <ScrollView contentContainerStyle={{alignItems: 'center'}} style={styles.content}>
-                    <TaskCard />
-                    <TaskCard done={true}/>
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
-                    <TaskCard />
+
+                    {
+                        load ? <ActivityIndicator color={'#EE6B26'} size={50}/>
+                        :
+                            tasks.map(t => (<TaskCard done={false} title={t.title} when={t.when} />))
+                    }
                 </ScrollView>
 
                 <Footer icon={'add'} />
