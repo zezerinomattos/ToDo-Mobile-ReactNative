@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { TouchableOpacity, Image, TextInput, Text, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity, Image} from 'react-native';
 
 import { TextInputMask } from 'react-native-masked-text'
 
