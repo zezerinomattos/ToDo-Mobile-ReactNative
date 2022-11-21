@@ -12,7 +12,7 @@ import iconClock from '../../assets/clock.png';
 export default function DateTimeInputAndroid({type}){
     const [dateTime, setDatetime] = useState();
     return(
-        <TouchableOpacity>
+        <TouchableOpacity style={styles.continer}>
             {
                 type === 'date' ?
                 <>

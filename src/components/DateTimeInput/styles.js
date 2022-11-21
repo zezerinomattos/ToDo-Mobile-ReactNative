@@ -7,13 +7,14 @@ const styles = StyleSheet.create({
         width: '95%',
         borderBottomWidth: 1,
         borderBottomColor: '#EE6B26',
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        marginVertical: 20
     },
 
     iconTextInput: {
         position: 'absolute',
         left: '95%',
-        top: 15,
+        top: 35,
         width: 25,
         height: 25,
         resizeMode: 'contain',

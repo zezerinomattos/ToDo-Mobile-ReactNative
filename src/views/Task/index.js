@@ -45,6 +45,7 @@ export default function Task(){
                 <Text style={styles.label}>Detalhes</Text>
                 <TextInput style={styles.inputArea} maxLength={200} multiline={true} placeholder='Detalhes da atividade que eu tenho que lembrar...' />
 
+                <DateTimeInputAndroid type={'date'}/>
                 <DateTimeInputAndroid type={'hour'}/>
 
                 <View style={styles.inLine}>
