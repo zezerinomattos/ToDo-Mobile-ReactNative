@@ -13,6 +13,7 @@ import {
 import styles from './styles';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import DateTimeInputAndroid from '../../components/DateTimeInput/index.android';
 
 // ICONES
 import typeIcons from '../../utils/typeIcons';
@@ -43,6 +44,8 @@ export default function Task(){
 
                 <Text style={styles.label}>Detalhes</Text>
                 <TextInput style={styles.inputArea} maxLength={200} multiline={true} placeholder='Detalhes da atividade que eu tenho que lembrar...' />
+
+                <DateTimeInputAndroid type={'hour'}/>
 
                 <View style={styles.inLine}>
                     <View style={styles.inputInLine}>
