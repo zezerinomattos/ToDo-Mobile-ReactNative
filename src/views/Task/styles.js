@@ -70,6 +70,10 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontSize: 16,
         paddingRight: 10
+    },
+
+    typeIconInative: {
+        opacity: 0.5
     }
 
     

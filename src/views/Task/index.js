@@ -21,6 +21,7 @@ import typeIcons from '../../utils/typeIcons';
 export default function Task({navigation}){
 
     const [done, setDone] = useState(false);
+    const [type, setTaype] = useState();
 
     function Back(){
         navigation.navigate('Home');
@@ -34,10 +35,10 @@ export default function Task({navigation}){
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{marginVertical:10}}>
                     {
-                        typeIcons.map(icon => (
+                        typeIcons.map((icon, index) => (
                             icon != null &&
-                                <TouchableOpacity>
-                                    <Image source={icon} style={styles.imageIcon}/>
+                                <TouchableOpacity onPress={() => setTaype(index)}>
+                                    <Image source={icon} style={[styles.imageIcon, type && type != index && styles.typeIconInative]}/>
                                 </TouchableOpacity>
                         ))
                     }
