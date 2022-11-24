@@ -7,13 +7,17 @@ import {
     Image, 
     TextInput, 
     KeyboardAvoidingView, 
-    Switch } from 'react-native';
+    Switch, 
+    Alert} from 'react-native';
+
+    import { format } from 'date-fns';
 
 // MY IMPORTS
 import styles from './styles';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import DateTimeInput from '../../components/DateTimeInput';
+import api from '../../services/api';
 
 // ICONES
 import typeIcons from '../../utils/typeIcons';
@@ -22,10 +26,50 @@ export default function Task({navigation}){
 
     const [done, setDone] = useState(false);
     const [type, setTaype] = useState();
+    const [title, setTitle] = useState();
+    const [description, setDescripition] = useState();
+    const [date, setDate] = useState();
+    const [hour, setHour] = useState();
+    const [macaddress, setMacaddress] = useState('11:11:11:11:11:11');
+
+    async function New(){
+        //alert(`${date}T${hour}:00.000`);
+
+        if(!type){
+            return Alert.alert('Escolha um tipo de tarefa!');
+        }
+        if(!title){
+            return Alert.alert('Defina o nome da tarefa!');
+        }
+        if(!description){
+            return Alert.alert('Defina a descrição da tarefa!');
+        }
+        if(!date){
+            return Alert.alert('Defina uma data para a tarefa!');
+        }
+        if(!hour){
+            return Alert.alert('Defina um horario para a tarefa!');
+        }
+
+        //Chamando a api
+        await api.post('/task', {
+            macaddress,
+            type,
+            title,
+            description,
+            when: `${date}T${hour}:00.000`
+            //2022-11-24T02:00:00.000+00:00
+            
+        }).then(() => {
+            navigation.navigate('Home');
+        });
+        
+    }
 
     function Back(){
         navigation.navigate('Home');
     }
+
 
     return(
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -45,13 +89,24 @@ export default function Task({navigation}){
                 </ScrollView>
 
                 <Text style={styles.label}>Título</Text>
-                <TextInput style={styles.input} maxLength={30} placeholder='Lembre-me de fazer...' />
+                <TextInput style={styles.input} 
+                    maxLength={30} 
+                    placeholder='Lembre-me de fazer...' 
+                    onChangeText={(text) => setTitle(text)} 
+                    value={title}
+                />
 
                 <Text style={styles.label}>Detalhes</Text>
-                <TextInput style={styles.inputArea} maxLength={200} multiline={true} placeholder='Detalhes da atividade que eu tenho que lembrar...' />
+                <TextInput style={styles.inputArea} 
+                    maxLength={200} 
+                    multiline={true} 
+                    placeholder='Detalhes da atividade que eu tenho que lembrar...' 
+                    onChangeText={(text) => setDescripition(text)}
+                    value={description} 
+                />
 
-                <DateTimeInput type={'date'}/>
-                <DateTimeInput type={'hour'}/>
+                <DateTimeInput type={'date'} save={setDate}/>
+                <DateTimeInput type={'hour'} save={setHour}/>
 
                 <View style={styles.inLine}>
                     <View style={styles.inputInLine}>
@@ -67,7 +122,7 @@ export default function Task({navigation}){
 
             </ScrollView>
 
-            <Footer icon={'save'} />
+            <Footer icon={'save'} onPress={New}/>
 
         </KeyboardAvoidingView>
     );

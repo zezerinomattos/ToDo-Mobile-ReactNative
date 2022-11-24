@@ -1,7 +1,7 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { TouchableOpacity, Image} from 'react-native';
 
-import { TextInputMask } from 'react-native-masked-text'
+import { TextInputMask } from 'react-native-masked-text';
 
 // MY IMPORTS
 import styles from './styles';
@@ -9,22 +9,37 @@ import iconCalendar from '../../assets/calendar.png';
 import iconClock from '../../assets/clock.png';
 
 
-export default function DateTimeInputAndroid({type}){
-    const [dateTime, setDatetime] = useState();
+export default function DateTimeInputAndroid({type, save}){
+    const [date, setDate] = useState();
+    const [time, setTime] = useState();
+
+    useEffect(() => {
+
+        if(type == 'date'){
+            save(date);
+            
+        }else{
+            save(time)
+        }
+        
+    });
+
+
     return(
-        <TouchableOpacity style={styles.continer}>
+        <TouchableOpacity style={styles.continer} >
             {
                 type === 'date' ?
                 <>
-                    <TextInputMask style={styles.input} placeholder='DD-MM-YYYY'
+                    <TextInputMask style={styles.input} placeholder='YYYY-MM-DD'
                         type={'datetime'}
                         options={{
-                            format: 'DD-MM-YYYY'
+                            format: 'YYYY-MM-DD'
                         }}
-                        value={dateTime}
-                        onChangeText={e => setDatetime(e)}
+                        value={date}
+                        onChangeText={e => setDate(e)}                       
                     />
                     <Image source={iconCalendar} style={styles.iconTextInput}/>
+                    
                 </>
                 :
                 <>
@@ -33,10 +48,11 @@ export default function DateTimeInputAndroid({type}){
                         options={{
                             format: 'HH:mm'
                         }}
-                        value={dateTime}
-                        onChangeText={e => setDatetime(e)}
+                        value={time}
+                        onChangeText={e => setTime(e)}
                     /> 
                     <Image source={iconClock} style={styles.iconTextInput}/>
+
                 </>
 
             }
