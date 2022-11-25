@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     Text, 
     View, 
@@ -8,9 +8,10 @@ import {
     TextInput, 
     KeyboardAvoidingView, 
     Switch, 
-    Alert} from 'react-native';
+    Alert} 
+from 'react-native';
 
-    import { format } from 'date-fns';
+import * as Network from 'expo-network';
 
 // MY IMPORTS
 import styles from './styles';
@@ -22,15 +23,16 @@ import api from '../../services/api';
 // ICONES
 import typeIcons from '../../utils/typeIcons';
 
-export default function Task({navigation}){
+export default function Task({navigation, idTask}){
 
+    const [id, setId] = useState(false);
     const [done, setDone] = useState(false);
     const [type, setTaype] = useState();
     const [title, setTitle] = useState();
     const [description, setDescripition] = useState();
     const [date, setDate] = useState();
     const [hour, setHour] = useState();
-    const [macaddress, setMacaddress] = useState('11:11:11:11:11:11');
+    const [macaddress, setMacaddress] = useState();
 
     async function New(){
         //alert(`${date}T${hour}:00.000`);
@@ -58,7 +60,6 @@ export default function Task({navigation}){
             title,
             description,
             when: `${date}T${hour}:00.000`
-            //2022-11-24T02:00:00.000+00:00
             
         }).then(() => {
             navigation.navigate('Home');
@@ -69,6 +70,20 @@ export default function Task({navigation}){
     function Back(){
         navigation.navigate('Home');
     }
+
+    async function getMacAdress(){
+        await Network.getIpAddressAsync().then(mac => {           
+            setMacaddress(mac)
+           }); 
+    }
+
+    useEffect(() => {
+        if(navigation.state.params){
+            setId(navigation.state.params.idTask);
+        }
+
+        getMacAdress();
+    });
 
 
     return(
@@ -107,18 +122,20 @@ export default function Task({navigation}){
 
                 <DateTimeInput type={'date'} save={setDate}/>
                 <DateTimeInput type={'hour'} save={setHour}/>
+                {
+                    id &&
+                        <View style={styles.inLine}>
+                            <View style={styles.inputInLine}>
+                                
+                                <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'}/>
 
-                <View style={styles.inLine}>
-                    <View style={styles.inputInLine}>
-                        
-                        <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'}/>
-
-                        <Text style={styles.switchLabel}>Concluído</Text>
-                    </View>
-                    <TouchableOpacity>
-                        <Text style={styles.removeLabel}>EXCLUÍR</Text>
-                    </TouchableOpacity>
-                </View>
+                                <Text style={styles.switchLabel}>Concluído</Text>
+                            </View>
+                            <TouchableOpacity>
+                                <Text style={styles.removeLabel}>EXCLUÍR</Text>
+                            </TouchableOpacity>
+                        </View>
+                }
 
             </ScrollView>
 
