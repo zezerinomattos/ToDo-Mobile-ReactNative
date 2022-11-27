@@ -12,6 +12,8 @@ import {
 from 'react-native';
 
 import * as Network from 'expo-network';
+import { format } from 'date-fns';
+import { TextInputMask } from 'react-native-masked-text';
 
 // MY IMPORTS
 import styles from './styles';
@@ -22,17 +24,21 @@ import api from '../../services/api';
 
 // ICONES
 import typeIcons from '../../utils/typeIcons';
+import iconCalendar from '../../assets/calendar.png';
+import iconClock from '../../assets/clock.png';
 
-export default function Task({navigation, idTask}){
+export default function Task({navigation}){
 
     const [id, setId] = useState(false);
     const [done, setDone] = useState(false);
     const [type, setTaype] = useState();
     const [title, setTitle] = useState();
     const [description, setDescripition] = useState();
+    const [macaddress, setMacaddress] = useState();
     const [date, setDate] = useState();
     const [hour, setHour] = useState();
-    const [macaddress, setMacaddress] = useState();
+
+    const [load, setLoad] = useState(true);
 
     async function New(){
         //alert(`${date}T${hour}:00.000`);
@@ -51,7 +57,7 @@ export default function Task({navigation, idTask}){
         }
         if(!hour){
             return Alert.alert('Defina um horario para a tarefa!');
-        }
+        }      
 
         //Chamando a api
         await api.post('/task', {
@@ -67,24 +73,43 @@ export default function Task({navigation, idTask}){
         
     }
 
+    async function LoadTask(){
+        await api.get(`/task/${id}`)
+            .then(response => {
+                setLoad(true)
+                setDone(response.data.done);
+                setTaype(response.data.type);
+                setTitle(response.data.title);
+                setDescripition(response.data.description);
+                setHour(format(new Date(response.data.when), 'HH:00'));
+                setDate(format(new Date(response.data.when), 'yyyy-MM-dd'));
+            });
+            
+    }
+
     function Back(){
         navigation.navigate('Home');
     }
 
     async function getMacAdress(){
         await Network.getIpAddressAsync().then(mac => {           
-            setMacaddress(mac)
+            setMacaddress(mac);
+            setLoad(false);
            }); 
     }
 
     useEffect(() => {
+        getMacAdress();
+        
         if(navigation.state.params){
             setId(navigation.state.params.idTask);
+            LoadTask().then(() => {
+                setLoad(false);
+            })           
         }
+        //setDate(format(new Date(dateFormat), 'yyyy-MM-dd'));
 
-        getMacAdress();
     });
-
 
     return(
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -120,8 +145,58 @@ export default function Task({navigation, idTask}){
                     value={description} 
                 />
 
-                <DateTimeInput type={'date'} save={setDate}/>
-                <DateTimeInput type={'hour'} save={setHour}/>
+                {/* <DateTimeInput type={'date'} save={setDate} datee={date}/>
+                <DateTimeInput type={'hour'} save={setHour} hour={hour}/> */}
+                
+                <TouchableOpacity >
+                    {
+                        id ? 
+                            <>
+                                <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'yyyy-MM-dd'
+                                    }}
+                                    value={date}
+                                    onChangeText={e => setDate(e)}                       
+                                />
+                                <Image source={iconCalendar} style={styles.iconTextInputDate}/>
+
+                                <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'HH:mm'
+                                    }}
+                                    value={hour}
+                                    onChangeText={e => setHour(e)}
+                                />                   
+                                <Image source={iconClock} style={styles.iconTextInputHour}/>
+                            </>                  
+                        :
+                            <>
+                                <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'yyyy-MM-dd'
+                                    }}
+                                    value={date}
+                                    onChangeText={e => setDate(e)}                       
+                                />
+                                <Image source={iconCalendar} style={styles.iconTextInputDate}/>
+ 
+                                <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'HH:mm'
+                                    }}
+                                    value={hour}
+                                    onChangeText={e => setHour(e)}
+                                />                   
+                                <Image source={iconClock} style={styles.iconTextInputHour}/>
+                            </> 
+                    }
+                </TouchableOpacity>               
+
                 {
                     id &&
                         <View style={styles.inLine}>

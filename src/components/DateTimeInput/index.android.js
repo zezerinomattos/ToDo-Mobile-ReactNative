@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from 'react';
-import { TouchableOpacity, Image} from 'react-native';
+import { TouchableOpacity, Image, Alert} from 'react-native';
 
 import { TextInputMask } from 'react-native-masked-text';
+import { format } from 'date-fns';
 
 // MY IMPORTS
 import styles from './styles';
@@ -9,21 +10,37 @@ import iconCalendar from '../../assets/calendar.png';
 import iconClock from '../../assets/clock.png';
 
 
-export default function DateTimeInputAndroid({type, save}){
+export default function DateTimeInputAndroid({type, save, datee, hour}){
     const [date, setDate] = useState();
     const [time, setTime] = useState();
+    const [carregaHour, setCarregaHour] = useState();
 
     useEffect(() => {
 
-        if(type == 'date'){
-            save(date);
-            
+        if(datee){
+            if(datee){
+                setDate(format(new Date(datee), 'yyyy-MM-dd'));  
+                save(date);        
+            } 
+           
+            if(hour){
+                setCarregaHour(format(new Date(hour), 'HH:00'));
+                setTime(toString(carregaHour));
+                save(time)
+            }
         }else{
-            save(time)
-        }
-        
-    });
 
+            if(type == 'date'){
+                save(date);
+                
+            }else{
+                save(time)
+            }
+        }
+
+        
+
+    });
 
     return(
         <TouchableOpacity style={styles.continer} >
@@ -43,6 +60,7 @@ export default function DateTimeInputAndroid({type, save}){
                 </>
                 :
                 <>
+                            
                     <TextInputMask style={styles.input} placeholder='HH:mm'
                         type={'datetime'}
                         options={{
@@ -50,7 +68,7 @@ export default function DateTimeInputAndroid({type, save}){
                         }}
                         value={time}
                         onChangeText={e => setTime(e)}
-                    /> 
+                    />                   
                     <Image source={iconClock} style={styles.iconTextInput}/>
 
                 </>
