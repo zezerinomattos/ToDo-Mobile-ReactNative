@@ -13,7 +13,7 @@ import {
 from 'react-native';
 
 import * as Network from 'expo-network';
-import { format } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import { TextInputMask } from 'react-native-masked-text';
 
 // MY IMPORTS
@@ -41,8 +41,11 @@ export default function Task({navigation}){
 
     const [load, setLoad] = useState(true);
 
-    async function New(){
+    async function SaveTask(){
         //alert(`${date}T${hour}:00.000`);
+        if(isPast(new Date(date))){
+            return Alert.alert('Voce não pode escolher uma data passada!');
+        }
 
         if(!type){
             return Alert.alert('Escolha um tipo de tarefa!');
@@ -60,17 +63,34 @@ export default function Task({navigation}){
             return Alert.alert('Defina um horario para a tarefa!');
         }      
 
-        //Chamando a api
-        await api.post('/task', {
-            macaddress,
-            type,
-            title,
-            description,
-            when: `${date}T${hour}:00.000`
-            
-        }).then(() => {
-            navigation.navigate('Home');
-        });
+        //Vou fazer uma condição para verificar se é novo ou editar 
+        if(id){
+            //Chamando a api
+            await api.put(`/task/${id}`, {
+                macaddress,
+                type,
+                title,
+                description,
+                done,
+                when: `${date}T${hour}:00.000`
+                              
+            }).then(() => {
+                navigation.navigate('Home');
+            });
+
+        }else{
+            //Chamando a api
+            await api.post('/task', {
+                macaddress,
+                type,
+                title,
+                description,
+                when: `${date}T${hour}:00.000`
+                
+            }).then(() => {
+                navigation.navigate('Home');
+            });
+        }  
         
     }
 
@@ -218,7 +238,7 @@ export default function Task({navigation}){
                     </ScrollView>
             }
 
-            <Footer icon={'save'} onPress={New}/>
+            <Footer icon={'save'} onPress={SaveTask}/>
 
         </KeyboardAvoidingView>
     );

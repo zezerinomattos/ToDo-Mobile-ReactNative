@@ -99,7 +99,7 @@ export default function Home({navigation}){
                     {
                         load ? <ActivityIndicator color={'#EE6B26'} size={50}/>
                         :
-                            tasks.map(t => (<TaskCard done={false} 
+                            tasks.map(t => (<TaskCard done={t.done} 
                                                       title={t.title} 
                                                       when={t.when} 
                                                       type={t.type}
