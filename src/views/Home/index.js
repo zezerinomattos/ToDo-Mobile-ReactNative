@@ -8,11 +8,12 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import TaskCard from '../../components/TaskCard';
 
+
 // CONECTAR COM API
 import api from '../../services/api';
 
 export default function Home({navigation}){
-
+    
     const [filter, setFilter] = useState('all');
     const [tasks, setTasks] = useState([]);
     const [load, setLoad] = useState(false);

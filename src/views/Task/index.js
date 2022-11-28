@@ -8,7 +8,8 @@ import {
     TextInput, 
     KeyboardAvoidingView, 
     Switch, 
-    Alert} 
+    Alert,
+    ActivityIndicator } 
 from 'react-native';
 
 import * as Network from 'expo-network';
@@ -28,7 +29,7 @@ import iconCalendar from '../../assets/calendar.png';
 import iconClock from '../../assets/clock.png';
 
 export default function Task({navigation}){
-
+    
     const [id, setId] = useState(false);
     const [done, setDone] = useState(false);
     const [type, setTaype] = useState();
@@ -107,112 +108,115 @@ export default function Task({navigation}){
                 setLoad(false);
             })           
         }
-        //setDate(format(new Date(dateFormat), 'yyyy-MM-dd'));
 
     });
 
     return(
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
             <Header showBack={true} onPress={Back}/>
-            
-            <ScrollView style={{width: '100%'}}>
+            {
+                load ?
+                    <ActivityIndicator color={'#EE6B26'} size={50} style={{marginTop: 150}}/>
+                :
+                    <ScrollView style={{width: '100%'}}>
 
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{marginVertical:10}}>
-                    {
-                        typeIcons.map((icon, index) => (
-                            icon != null &&
-                                <TouchableOpacity onPress={() => setTaype(index)}>
-                                    <Image source={icon} style={[styles.imageIcon, type && type != index && styles.typeIconInative]}/>
-                                </TouchableOpacity>
-                        ))
-                    }
-                </ScrollView>
+                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{marginVertical:10}}>
+                            {
+                                typeIcons.map((icon, index) => (
+                                    icon != null &&
+                                        <TouchableOpacity onPress={() => setTaype(index)}>
+                                            <Image source={icon} style={[styles.imageIcon, type && type != index && styles.typeIconInative]}/>
+                                        </TouchableOpacity>
+                                ))
+                            }
+                        </ScrollView>
 
-                <Text style={styles.label}>Título</Text>
-                <TextInput style={styles.input} 
-                    maxLength={30} 
-                    placeholder='Lembre-me de fazer...' 
-                    onChangeText={(text) => setTitle(text)} 
-                    value={title}
-                />
+                        <Text style={styles.label}>Título</Text>
+                        <TextInput style={styles.input} 
+                            maxLength={30} 
+                            placeholder='Lembre-me de fazer...' 
+                            onChangeText={(text) => setTitle(text)} 
+                            value={title}
+                        />
 
-                <Text style={styles.label}>Detalhes</Text>
-                <TextInput style={styles.inputArea} 
-                    maxLength={200} 
-                    multiline={true} 
-                    placeholder='Detalhes da atividade que eu tenho que lembrar...' 
-                    onChangeText={(text) => setDescripition(text)}
-                    value={description} 
-                />
+                        <Text style={styles.label}>Detalhes</Text>
+                        <TextInput style={styles.inputArea} 
+                            maxLength={200} 
+                            multiline={true} 
+                            placeholder='Detalhes da atividade que eu tenho que lembrar...' 
+                            onChangeText={(text) => setDescripition(text)}
+                            value={description} 
+                        />
 
-                {/* <DateTimeInput type={'date'} save={setDate} datee={date}/>
-                <DateTimeInput type={'hour'} save={setHour} hour={hour}/> */}
-                
-                <TouchableOpacity >
-                    {
-                        id ? 
-                            <>
-                                <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
-                                    type={'datetime'}
-                                    options={{
-                                        format: 'yyyy-MM-dd'
-                                    }}
-                                    value={date}
-                                    onChangeText={e => setDate(e)}                       
-                                />
-                                <Image source={iconCalendar} style={styles.iconTextInputDate}/>
+                        {/* <DateTimeInput type={'date'} save={setDate} datee={date}/>
+                        <DateTimeInput type={'hour'} save={setHour} hour={hour}/> */}
+                        
+                        <TouchableOpacity >
+                            {
+                                id ? 
+                                    <>
+                                        <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
+                                            type={'datetime'}
+                                            options={{
+                                                format: 'yyyy-MM-dd'
+                                            }}
+                                            value={date}
+                                            onChangeText={e => setDate(e)}                       
+                                        />
+                                        <Image source={iconCalendar} style={styles.iconTextInputDate}/>
 
-                                <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
-                                    type={'datetime'}
-                                    options={{
-                                        format: 'HH:mm'
-                                    }}
-                                    value={hour}
-                                    onChangeText={e => setHour(e)}
-                                />                   
-                                <Image source={iconClock} style={styles.iconTextInputHour}/>
-                            </>                  
-                        :
-                            <>
-                                <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
-                                    type={'datetime'}
-                                    options={{
-                                        format: 'yyyy-MM-dd'
-                                    }}
-                                    value={date}
-                                    onChangeText={e => setDate(e)}                       
-                                />
-                                <Image source={iconCalendar} style={styles.iconTextInputDate}/>
- 
-                                <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
-                                    type={'datetime'}
-                                    options={{
-                                        format: 'HH:mm'
-                                    }}
-                                    value={hour}
-                                    onChangeText={e => setHour(e)}
-                                />                   
-                                <Image source={iconClock} style={styles.iconTextInputHour}/>
-                            </> 
-                    }
-                </TouchableOpacity>               
+                                        <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
+                                            type={'datetime'}
+                                            options={{
+                                                format: 'HH:mm'
+                                            }}
+                                            value={hour}
+                                            onChangeText={e => setHour(e)}
+                                        />                   
+                                        <Image source={iconClock} style={styles.iconTextInputHour}/>
+                                    </>                  
+                                :
+                                    <>
+                                        <TextInputMask style={styles.inputDateHour} placeholder='yyyy-MM-dd'
+                                            type={'datetime'}
+                                            options={{
+                                                format: 'yyyy-MM-dd'
+                                            }}
+                                            value={date}
+                                            onChangeText={e => setDate(e)}                       
+                                        />
+                                        <Image source={iconCalendar} style={styles.iconTextInputDate}/>
+        
+                                        <TextInputMask style={styles.inputDateHour} placeholder='HH:mm'
+                                            type={'datetime'}
+                                            options={{
+                                                format: 'HH:mm'
+                                            }}
+                                            value={hour}
+                                            onChangeText={e => setHour(e)}
+                                        />                   
+                                        <Image source={iconClock} style={styles.iconTextInputHour}/>
+                                    </> 
+                            }
+                        </TouchableOpacity>               
 
-                {
-                    id &&
-                        <View style={styles.inLine}>
-                            <View style={styles.inputInLine}>
-                                
-                                <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'}/>
+                        {
+                            id &&
+                                <View style={styles.inLine}>
+                                    <View style={styles.inputInLine}>
+                                        
+                                        <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'}/>
 
-                                <Text style={styles.switchLabel}>Concluído</Text>
-                            </View>
-                            <TouchableOpacity>
-                                <Text style={styles.removeLabel}>EXCLUÍR</Text>
-                            </TouchableOpacity>
-                        </View>
-                }
+                                        <Text style={styles.switchLabel}>Concluído</Text>
+                                    </View>
+                                    <TouchableOpacity>
+                                        <Text style={styles.removeLabel}>EXCLUÍR</Text>
+                                    </TouchableOpacity>
+                                </View>
+                        }
 
-            </ScrollView>
+                    </ScrollView>
+            }
 
             <Footer icon={'save'} onPress={New}/>
 
