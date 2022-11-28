@@ -20,7 +20,6 @@ import { TextInputMask } from 'react-native-masked-text';
 import styles from './styles';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import DateTimeInput from '../../components/DateTimeInput';
 import api from '../../services/api';
 
 // ICONES
@@ -117,6 +116,25 @@ export default function Task({navigation}){
             setMacaddress(mac);
             setLoad(false);
            }); 
+    }
+
+    async function DeleteTask(){
+        await api.delete(`/task/${id}`)
+            .then(() => {
+                navigation.navigate('Home');
+            });
+    }
+
+    async function Remove(){
+        Alert.alert(
+            'Remover Tarefa',
+            'Deseja realmente remover essa tarefa?',
+            [
+                {text: 'Cancelar'},
+                {text: 'Confirmar', onPress: () => DeleteTask()},
+            ],
+            {cancelable: true}
+        );
     }
 
     useEffect(() => {
@@ -229,7 +247,7 @@ export default function Task({navigation}){
 
                                         <Text style={styles.switchLabel}>Concluído</Text>
                                     </View>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={Remove}>
                                         <Text style={styles.removeLabel}>EXCLUÍR</Text>
                                     </TouchableOpacity>
                                 </View>
